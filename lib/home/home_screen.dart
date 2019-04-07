@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../constants.dart' show Constants, AppColors;
+import './conversation_page.dart' show ConversationPage;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -69,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
        initialPage: _currentIndex,
     );
     _pages = [
-      Container(color: Colors.blue,),
+      ConversationPage(),
       Container(color: Colors.redAccent,),
       Container(color: Colors.greenAccent,),
       Container(color: Colors.orangeAccent,),
