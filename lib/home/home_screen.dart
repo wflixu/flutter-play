@@ -10,22 +10,15 @@ class HomeScreen extends StatefulWidget {
 enum ActionItems { GROUP_CHAP, ADD_FRIEND, QR_SCAN, PAYMENT, HELP }
 
 class NavigationIconView {
-  final String _title;
-  final IconData _icon;
-  final IconData _activeIcon;
   final BottomNavigationBarItem item;
 
   NavigationIconView(
       {Key key, String title, IconData icon, IconData activeIcon})
-      : _title = title,
-        _icon = icon,
-        _activeIcon = activeIcon,
-        item = BottomNavigationBarItem(
-            icon: Icon(icon, color: Color(AppColors.tabIcon)),
-            activeIcon: Icon(activeIcon, color: Color(AppColors.tabIconActive)),
+      : item = BottomNavigationBarItem(
+            icon: Icon(icon),
+            activeIcon: Icon(activeIcon),
             title: Text(
               title,
-              style: TextStyle(fontSize: 14.0),
             ),
             backgroundColor: Colors.white);
 }
@@ -33,6 +26,8 @@ class NavigationIconView {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   List<NavigationIconView> _navigationViews;
+  PageController _pageController;
+  List <Widget>_pages;
 
   void initState() {
     super.initState();
@@ -70,6 +65,15 @@ class _HomeScreenState extends State<HomeScreen> {
         activeIcon: IconData(0xe626, fontFamily: Constants.iconFontFamily),
       ),
     ];
+    _pageController = PageController(
+       initialPage: _currentIndex,
+    );
+    _pages = [
+      Container(color: Colors.blue,),
+      Container(color: Colors.redAccent,),
+      Container(color: Colors.greenAccent,),
+      Container(color: Colors.orangeAccent,),
+    ];
   }
 
   _buildPopMenuItem(int iconName, String title) {
@@ -96,6 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final BottomNavigationBar bottomNavBar = BottomNavigationBar(
+      fixedColor: const Color(AppColors.tabIconActive),
       items: _navigationViews
           .map<BottomNavigationBarItem>(
               (NavigationIconView navigationView) => navigationView.item)
@@ -106,7 +111,8 @@ class _HomeScreenState extends State<HomeScreen> {
         _currentIndex = index;
         print('tap $index item');
         setState(() {
-           _currentIndex = index; 
+          _currentIndex = index;
+          _pageController.animateToPage(_currentIndex,duration: Duration(milliseconds: 200),curve: Curves.easeInOut);
         });
       },
     );
@@ -165,8 +171,17 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      body: Container(
-        color: Colors.redAccent,
+      body:PageView.builder(
+        itemBuilder: (BuildContext context,int index){
+          return _pages[index];
+        },
+        controller: _pageController,
+        itemCount: _pages.length,
+        onPageChanged: (int index){
+            setState(() {
+              _currentIndex =index; 
+            });
+        },
       ),
       bottomNavigationBar: bottomNavBar,
     );
